@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:397111466835:android:a7c292f9a12963b35d5fa6",
+        "mobilesdk_app_id": "1:397111466835:android:aff18925b436d22d5d5fa6",
         "android_client_info": {
-          "package_name": "com.example.personalfinanceapp"
+          "package_name": "com.example.personalfinanceapp.dev"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "397111466835-e7pc4p7uqvemmru9jithl9qoi1pikrlr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.personalfinanceapp.dev",
+            "certificate_hash": "db132e3618537f6de7cf96f4286d6171820bf903"
+          }
+        },
+        {
+          "client_id": "397111466835-okabq2qm6emnvp4gcsdv5ug1gs5i194f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBjLaKG-SRvYTdVqHhf3yWkv95L3AnDzUs"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397111466835-okabq2qm6emnvp4gcsdv5ug1gs5i194f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

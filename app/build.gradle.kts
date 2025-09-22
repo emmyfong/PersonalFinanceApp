@@ -10,7 +10,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.personalfinanceapp"
+        applicationId = "com.example.personalfinanceapp.dev"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.compose)
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
 
     testImplementation(libs.junit)
 
