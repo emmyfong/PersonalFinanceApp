@@ -8,24 +8,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.personalfinanceapp.auth.AuthViewModel
 import com.example.personalfinanceapp.auth.LoginScreen
 import com.example.personalfinanceapp.auth.SignupScreen
 import com.example.personalfinanceapp.auth.WelcomeScreen
-import com.example.personalfinanceapp.dashboard.DashboardScreen
+import com.example.personalfinanceapp.navigation.AppMainScreen
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.example.personalfinanceapp.navigation.Screen
-import com.example.personalfinanceapp.navigation.NavBar
-import com.example.personalfinanceapp.navigation.NavItems
 import com.example.personalfinanceapp.ui.theme.PersonalFinanceAppTheme
 
 
@@ -42,12 +37,12 @@ class MainActivity : ComponentActivity() {
         try {
             val account = task.getResult(ApiException::class.java)
 
-            Log.d("GoogleSignIn", "Account Recieved: ${account.email}")
+            Log.d("GoogleSignIn", "Account Received: ${account.email}")
 
             val idToken = account?.idToken
 
             if (idToken != null) {
-                Log.d("GoogleSignIn", "ID Token recieved successfully -> Calling ViewModel: $idToken")
+                Log.d("GoogleSignIn", "ID Token received successfully -> Calling ViewModel: $idToken")
                 authViewModel.loginWithGoogle(idToken)
             } else {
                 Log.e("GoogleSignIn", "Google sign-in succeeded but ID Token was null.")
@@ -89,7 +84,7 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
     //Defines all the screens
     NavHost(
         navController = navController,
-        startDestination = if (userState != null) "dashboard" else "welcome"
+        startDestination = if (userState != null) "app_main_screen" else "welcome"
     ) {
         composable("welcome") {
             WelcomeScreen(
@@ -103,7 +98,7 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
                 authViewModel = authViewModel,
                 onGoogleSignIn = onGoogleSignIn,
                 onNavigateToSignup = { navController.navigate("signup") },
-                onLoginSuccess = { navController.navigate("dashboard") { popUpTo("login") { inclusive = true } } },
+                onLoginSuccess = { navController.navigate("app_main_screen") { popUpTo("login") { inclusive = true } } },
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -112,7 +107,7 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
             SignupScreen(
                 authViewModel = authViewModel,
                 onLoginSuccess = {
-                    navController.navigate("dashboard") {
+                    navController.navigate("app_main_screen") {
                         popUpTo("signup") { inclusive = true }
                     }
                 },
@@ -122,10 +117,10 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
             )
         }
 
-        composable("dashboard") {
-            DashboardScreen(
+        composable("app_main_screen") {
+            AppMainScreen(
                 authViewModel = authViewModel,
-                onLogout = { navController.navigate("login") { popUpTo("dashboard") { inclusive = true } } }
+                onLogout = { navController.navigate("login") { popUpTo("app_main_screen") { inclusive = true } } }
             )
         }
     }

@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.compose)
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation(libs.androidx.compose.foundation)
 
     testImplementation(libs.junit)
 

@@ -17,7 +17,7 @@ sealed class Screen(val route: String, val icon: ImageVector, val label: String)
 }
 
 val NavItems = listOf(
-    Screen.Dashboard,
     Screen.Transactions,
+    Screen.Dashboard,
     Screen.Settings
 )

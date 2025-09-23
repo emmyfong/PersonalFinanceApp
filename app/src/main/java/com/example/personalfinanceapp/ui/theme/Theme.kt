@@ -18,15 +18,21 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Black,
+    primary = Black,        // For filled buttons
     onPrimary = White,
-    background = White,
+    background = White,     // Main screen background
     surface = White,
-    onBackground = Black,
+    onBackground = Black,   // For text on background
     onSurface = Black,
     error = Color(0xFFB00020),
-    outline = SubText,
-    onSecondary = Black,
+    outline = SubText,      // For unselected text/icons and borders
+    secondary = Accent,     // For the rounded background in Login/Signup
+    onSecondary = Black,    // For text on that secondary background
+
+    surfaceVariant = Accent,
+    onSurfaceVariant = Black,
+    tertiary = Black,
+    onTertiary = White,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

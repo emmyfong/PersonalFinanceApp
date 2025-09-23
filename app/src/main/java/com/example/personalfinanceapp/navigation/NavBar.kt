@@ -1,8 +1,10 @@
 package com.example.personalfinanceapp.navigation
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
@@ -12,7 +14,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun NavBar(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    NavigationBar {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.secondary,
+
+    ) {
         NavItems.forEach { screen ->
             val isSelected = currentRoute == screen.route
 
@@ -31,7 +36,12 @@ fun NavBar(navController: NavController) {
                             restoreState = true
                         }
                     }
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    indicatorColor = MaterialTheme.colorScheme.background,
+                )
             )
         }
     }

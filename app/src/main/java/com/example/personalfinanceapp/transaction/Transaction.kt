@@ -1,5 +1,6 @@
 package com.example.personalfinanceapp.transaction
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
@@ -13,6 +14,6 @@ data class Transaction (
     val amount: Double = 0.0,
     val category: String = "",
     val type: String = "expense",
-    val date: Date = Date(),
+    val date: Timestamp = Timestamp.now(),
     val isGoal: Boolean = false
 )

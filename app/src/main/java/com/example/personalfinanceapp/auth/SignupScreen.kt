@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -11,6 +12,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -169,19 +172,29 @@ fun SignupScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    // Google Button (Monochrome Outlined)
-                    OutlinedButton(
+                    // Google Button
+                    Button(
                         onClick = onGoogleSignIn,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Black),
-                        shape = RoundedCornerShape(8.dp),
+                        shape = CircleShape,
+                        modifier = Modifier.size(64.dp).shadow(
+                            elevation = 8.dp,
+                            shape = CircleShape,
+                            ambientColor = Color.Black.copy(alpha = 0.1f),
+                            spotColor = Color.Black.copy(alpha = 0.8f)
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        ),
                         contentPadding = PaddingValues(12.dp)
                     ) {
                         Image(
                             painter = painterResource(R.drawable.googlelogo),
                             contentDescription = "Google logo",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(48.dp)
                         )
                     }
+                    Spacer(modifier = Modifier.width(16.dp))
                 }
 
                 Spacer(Modifier.height(32.dp))
@@ -189,6 +202,7 @@ fun SignupScreen(
                 // Navigate to Login
                 Row(
                     horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
@@ -200,7 +214,7 @@ fun SignupScreen(
                         contentPadding = PaddingValues(0.dp),
                         modifier = Modifier
                             .height(IntrinsicSize.Min)
-                            .padding(start = 4.dp)
+                            .padding(start = 2.dp)
                     ) {
                         Text(
                             "Login",

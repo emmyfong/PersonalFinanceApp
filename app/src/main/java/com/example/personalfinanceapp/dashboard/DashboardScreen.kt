@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,16 +17,23 @@ import com.example.personalfinanceapp.auth.AuthViewModel
 @Composable
 fun DashboardScreen(
     authViewModel: AuthViewModel,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onNavigateToAddTransaction: () -> Unit
 ) {
     val userName = authViewModel.user.collectAsState().value?.displayName ?: "User"
-    Scaffold { paddingValues ->
-        // Use a Box or Column to fill the screen and apply the content padding
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onNavigateToAddTransaction) {
+                Icon(Icons.Filled.Add, contentDescription = "Add Transaction")
+            }
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Applies padding consumed by system bars/ime
-                .padding(horizontal = 24.dp, vertical = 32.dp), // Add structural padding
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.Start
         ) {
             //Hello User
@@ -60,7 +69,6 @@ fun DashboardScreen(
                 Text("Logout")
             }
 
-            // ... Your future dashboard widgets will go here
         }
     }
 }
