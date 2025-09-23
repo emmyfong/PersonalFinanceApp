@@ -9,7 +9,7 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.personalfinanceapp.dev" />
-                  <option name="mobileSdkAppId" value="1:397111466835:android:e8a23a4fe22eccda5d5fa6" />
+                  <option name="mobileSdkAppId" value="1:397111466835:android:aff18925b436d22d5d5fa6" />
                   <option name="projectId" value="personalfinanceapp-2a4e8" />
                   <option name="projectNumber" value="397111466835" />
                 </ConnectionSetting>

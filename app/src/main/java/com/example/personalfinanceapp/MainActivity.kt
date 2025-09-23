@@ -8,19 +8,26 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.personalfinanceapp.auth.AuthViewModel
 import com.example.personalfinanceapp.auth.LoginScreen
 import com.example.personalfinanceapp.auth.SignupScreen
+import com.example.personalfinanceapp.auth.WelcomeScreen
 import com.example.personalfinanceapp.dashboard.DashboardScreen
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import com.example.personalfinanceapp.navigation.Screen
+import com.example.personalfinanceapp.navigation.NavBar
+import com.example.personalfinanceapp.navigation.NavItems
+import com.example.personalfinanceapp.ui.theme.PersonalFinanceAppTheme
+
 
 class MainActivity : ComponentActivity() {
 
@@ -62,29 +69,42 @@ class MainActivity : ComponentActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         setContent {
-            PersonalFinanceApp(authViewModel, onGoogleSignIn = {
-                val signInIntent = googleSignInClient.signInIntent
-                launcher.launch(signInIntent)
-            })
+            PersonalFinanceAppTheme {
+                PersonalFinanceApp(authViewModel, onGoogleSignIn = {
+                    val signInIntent = googleSignInClient.signInIntent
+                    launcher.launch(signInIntent)
+                })
+            }
+
         }
     }
 }
 
 @Composable
 fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit) {
+    //how we navigate the pages
     val navController = rememberNavController()
     val userState by authViewModel.user.collectAsState()
 
+    //Defines all the screens
     NavHost(
         navController = navController,
-        startDestination = if (userState != null) "dashboard" else "login"
+        startDestination = if (userState != null) "dashboard" else "welcome"
     ) {
+        composable("welcome") {
+            WelcomeScreen(
+                onNavigateToLogin = { navController.navigate("login") },
+                onNavigateToSignup = { navController.navigate("signup") }
+            )
+        }
+
         composable("login") {
             LoginScreen(
                 authViewModel = authViewModel,
                 onGoogleSignIn = onGoogleSignIn,
                 onNavigateToSignup = { navController.navigate("signup") },
-                onLoginSuccess = { navController.navigate("dashboard") { popUpTo("login") { inclusive = true } } }
+                onLoginSuccess = { navController.navigate("dashboard") { popUpTo("login") { inclusive = true } } },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
@@ -97,7 +117,8 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
                     }
                 },
                 onNavigateToLogin = { navController.navigate("login") },
-                onGoogleSignIn = onGoogleSignIn
+                onGoogleSignIn = onGoogleSignIn,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 

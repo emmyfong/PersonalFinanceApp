@@ -1,5 +1,18 @@
 package com.example.personalfinanceapp.transaction
 
+import com.google.firebase.firestore.DocumentId
+import java.util.Date
+
 //data model for transactions
-class Transaction {
-}
+data class Transaction (
+    //DocumentId tells Firestore that this field holds unique documentid
+    @DocumentId
+    val id: String = "",
+    //link the transaction to auth user's id
+    val userId: String = "",
+    val amount: Double = 0.0,
+    val category: String = "",
+    val type: String = "expense",
+    val date: Date = Date(),
+    val isGoal: Boolean = false
+)

@@ -4,5 +4,8 @@ import androidx.compose.ui.graphics.Color
 
 val Black = Color(0xFF000000)
 val White = Color(0xFFFFFFFF)
-val Accent = Color(color = 0xFFE9EBEF)
-val SubText = Color(color = 0xFFCBCED4)
+
+val Blue = Color(color = 0xFF3066BE)
+
+val Mint = Color(color = 0xFF63B995)
+val SubText = Color(color = 0xFFC5BFBF)

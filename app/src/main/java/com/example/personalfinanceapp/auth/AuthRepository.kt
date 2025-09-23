@@ -3,6 +3,7 @@ package com.example.personalfinanceapp.auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.tasks.await
 
 //firebase calls
@@ -10,9 +11,18 @@ import kotlinx.coroutines.tasks.await
 class AuthRepository (private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()){
     val currentUser: FirebaseUser? get() = firebaseAuth.currentUser
 
-    suspend fun signUp(email: String, password: String): FirebaseUser? {
+    suspend fun signUp(name: String, email: String, password: String): FirebaseUser? {
         val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-        return result.user
+        val user = result.user
+
+        //add name to user profile
+        user?.let { firebaseUse ->
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+            firebaseUse.updateProfile(profileUpdates).await()
+        }
+        return user
     }
 
     suspend fun login(email: String, password: String): FirebaseUser? {

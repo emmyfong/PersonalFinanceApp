@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,6 +17,7 @@ fun DashboardScreen(
     authViewModel: AuthViewModel,
     onLogout: () -> Unit
 ) {
+    val userName = authViewModel.user.collectAsState().value?.displayName ?: "User"
     Scaffold { paddingValues ->
         // Use a Box or Column to fill the screen and apply the content padding
         Column(
@@ -25,10 +27,18 @@ fun DashboardScreen(
                 .padding(horizontal = 24.dp, vertical = 32.dp), // Add structural padding
             horizontalAlignment = Alignment.Start
         ) {
+            //Hello User
+            Text(
+                text = "Hello, $userName!",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
             // Main App Title/Header Text
             Text(
                 text = "Dashboard",
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary
             )
 

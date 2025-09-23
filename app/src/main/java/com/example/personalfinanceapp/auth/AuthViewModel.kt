@@ -29,10 +29,10 @@ class AuthViewModel(
         }
     }
 
-    fun signUp(email: String, password: String){
+    fun signUp(name: String,email: String, password: String){
         viewModelScope.launch {
             try {
-                val result = repo.signUp(email, password)
+                val result = repo.signUp(name, email, password)
                 _user.value = result
             } catch (e: Exception) {
                 _error.value = e.message
