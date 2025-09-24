@@ -32,7 +32,7 @@ fun TransactionsScreen(
     Scaffold(
         topBar = {
           TopAppBar(
-              title = { Text("Transactions History") },
+              title = { Text("Categories") },
               actions = {
                   IconButton(onClick = onNavigateToManageCategories) {
                       Icon(Icons.Filled.Add, contentDescription = "Manage Categories")

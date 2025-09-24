@@ -10,4 +10,4 @@ val Blue = Color(color = 0xFF3066BE)
 val Mint = Color(color = 0xFF63B995)
 val SubText = Color(color = 0xFFC5BFBF)
 
-val Accent = Color(color = 0xFFF3F3F3)
+val Accent = Color(color = 0xFFFCFCFC)

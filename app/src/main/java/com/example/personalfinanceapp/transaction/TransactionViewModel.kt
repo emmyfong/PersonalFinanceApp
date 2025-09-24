@@ -2,13 +2,15 @@ package com.example.personalfinanceapp.transaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.personalfinanceapp.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 //manage state and logic for the transaction screen
 class TransactionViewModel(
-    private val repo: TransactionRepository = TransactionRepository()
+    private val repo: TransactionRepository = TransactionRepository(),
+    private val authViewModel: AuthViewModel = AuthViewModel()
 ) : ViewModel() {
 
     private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
@@ -21,7 +23,17 @@ class TransactionViewModel(
     val error: StateFlow<String?> = _error
 
     init {
-        fetchTransactions()
+        fetchCategories()
+
+        viewModelScope.launch {
+            authViewModel.user.collect { user ->
+                if (user != null) {
+                    if (_transactions.value.isEmpty()) {
+                        fetchTransactions()
+                    }
+                }
+            }
+        }
     }
 
     // Fetches all transactions from the repository

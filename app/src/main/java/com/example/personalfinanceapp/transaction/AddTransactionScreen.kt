@@ -77,7 +77,8 @@ fun AddTransactionScreen(
                 } else {
                     amount
                 }
-                val transactionAmount = amount.toDoubleOrNull()
+
+                val transactionAmount = formattedAmountString.toDoubleOrNull()
                 if (transactionAmount != null && selectedCategory.isNotEmpty()) {
                     transactionViewModel.addTransaction(
                         amount = transactionAmount,
