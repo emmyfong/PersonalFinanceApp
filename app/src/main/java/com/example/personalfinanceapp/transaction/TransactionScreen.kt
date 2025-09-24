@@ -3,14 +3,19 @@ package com.example.personalfinanceapp.transaction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,21 +33,18 @@ fun TransactionsScreen(
     onNavigateToManageCategories: () -> Unit
 ) {
     val transactions by transactionViewModel.transactions.collectAsState()
+    //add state for the dialog
+    var showAddOptionsDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
           TopAppBar(
-              title = { Text("Categories") },
-              actions = {
-                  IconButton(onClick = onNavigateToManageCategories) {
-                      Icon(Icons.Filled.Add, contentDescription = "Manage Categories")
-                  }
-              }
+              title = { Text("Transaction History") },
           )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToAddTransaction) {
-                Icon(Icons.Filled.Add, contentDescription = "Add Transaction")
+            FloatingActionButton(onClick = { showAddOptionsDialog = true }) {
+                Icon(Icons.Filled.Add, contentDescription = "Add")
             }
         },
     ) { paddingValues ->
@@ -50,16 +52,8 @@ fun TransactionsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text(
-                "Transaction History",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = Black,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
             if (transactions.isEmpty()) {
                 Text(
                     "No transactions found.",
@@ -69,7 +63,7 @@ fun TransactionsScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(transactions) { transaction ->
                         TransactionItem(transaction = transaction)
@@ -77,14 +71,60 @@ fun TransactionsScreen(
                 }
             }
         }
+
+        //alert for "add" options
+        if (showAddOptionsDialog) {
+            AlertDialog(
+                onDismissRequest = { showAddOptionsDialog = false },
+                title = { Text("Add New...") },
+                text = {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        TextButton(onClick = {
+                            onNavigateToAddTransaction()
+                            showAddOptionsDialog = false
+                        }) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Filled.Add, contentDescription = "New Transaction")
+                                Spacer(Modifier.width(8.dp))
+                                Text("New Transaction")
+                            }
+                        }
+
+                        TextButton(onClick = {
+                            onNavigateToManageCategories()
+                            showAddOptionsDialog = false
+                        }) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Filled.Add, contentDescription = "New Category")
+                                Spacer(Modifier.width(8.dp))
+                                Text("New Category")
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showAddOptionsDialog = false }) {
+                        Text("Close")
+                    }
+                }
+            )
+        }
     }
 }
 
 @Composable
 fun TransactionItem(transaction: Transaction) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary
+        )
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -108,11 +148,19 @@ fun TransactionItem(transaction: Transaction) {
                     color = SubText
                 )
             }
+
+            //check to see if + or - and change color based on that
+            val prefix = if (transaction.type == "income") "+" else "-"
+            val amountColor = if (transaction.type == "income") MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
+
+            //format amount to have 2 decimal places
+            val formattedAmount = "%.2f".format(transaction.amount)
+
             Text(
-                text = "$${transaction.amount}",
+                text = "$prefix$$formattedAmount",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = if (transaction.type == "income") MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
+                color = amountColor
             )
         }
     }

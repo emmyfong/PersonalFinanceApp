@@ -18,6 +18,7 @@ import com.example.personalfinanceapp.auth.AuthViewModel
 import com.example.personalfinanceapp.dashboard.DashboardScreen
 import com.example.personalfinanceapp.transaction.TransactionsScreen
 import com.example.personalfinanceapp.transaction.AddTransactionScreen
+import com.example.personalfinanceapp.transaction.ManageCategoriesScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -44,7 +45,8 @@ fun AppMainScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Dashboard.route) {
-                DashboardScreen(authViewModel = authViewModel,
+                DashboardScreen(
+                    authViewModel = authViewModel,
                     onLogout = onLogout,
                     onNavigateToAddTransaction = { navHostController.navigate("add_transaction") })
             }
@@ -59,12 +61,20 @@ fun AppMainScreen(
                 // SettingsScreen()
             }
             composable("add_transaction") {
-                AddTransactionScreen (
-                    onTransactionAdded = {navHostController.popBackStack()}
+                AddTransactionScreen(
+                    onNavigateBack = { navHostController.popBackStack() },
+                    onTransactionAdded = { navHostController.popBackStack() }
                 )
             }
             composable("manage_categories") {
-                Text(text = "Manage Categories Screen")
+                ManageCategoriesScreen(
+                    onNavigateBack = { navHostController.popBackStack() },
+                    onNavigateToAddCategory = { navHostController.navigate("add_category_dialog") }
+                )
+            }
+            composable("add_category_dialog") {
+                // TODO: Add AddCategoryDialog composable here
+                // AddCategoryDialog()
             }
         }
     }

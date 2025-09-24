@@ -1,11 +1,15 @@
 package com.example.personalfinanceapp.transaction
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import com.example.personalfinanceapp.R
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -17,7 +21,8 @@ import com.example.personalfinanceapp.ui.theme.SubText
 @Composable
 fun AddTransactionScreen(
     transactionViewModel: TransactionViewModel = viewModel(),
-    onTransactionAdded: () -> Unit
+    onTransactionAdded: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     var amount by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
@@ -26,71 +31,89 @@ fun AddTransactionScreen(
     val defaultCategories = listOf("Groceries", "Rent", "Salary", "Utilities", "Other")
     val transactionTypes = listOf("Expense", "Income")
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
-    ) {
-        Text(
-            "New Transaction",
-            style = MaterialTheme.typography.headlineLarge,
-            color = Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-
-        // Amount Input
-        OutlinedTextField(
-            value = amount,
-            onValueChange = { amount = it },
-            label = { Text("Amount", color = SubText) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // Transaction Type Dropdown
-        DropdownMenuField(
-            label = "Type",
-            options = transactionTypes,
-            selectedOption = selectedType,
-            onOptionSelected = { selectedType = it }
-        )
-
-        // Category Dropdown
-        DropdownMenuField(
-            label = "Category",
-            options = defaultCategories,
-            selectedOption = selectedCategory,
-            onOptionSelected = { selectedCategory = it }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Add Transaction Button
-        Button(
-            onClick = {
-                //check if amount string contains decimal point else add it
-                val formattedAmountString = if (!amount.contains(".")){
-                    "$amount.00"
-                } else {
-                    amount
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Image(
+                            painter = painterResource(id = R.drawable.arrow_back_ios_new_24),
+                            contentDescription = "Back",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                        )
+                    }
                 }
-
-                val transactionAmount = formattedAmountString.toDoubleOrNull()
-                if (transactionAmount != null && selectedCategory.isNotEmpty()) {
-                    transactionViewModel.addTransaction(
-                        amount = transactionAmount,
-                        category = selectedCategory,
-                        type = selectedType.lowercase()
-                    )
-                    onTransactionAdded()
-                }
-            },
-            modifier = Modifier.fillMaxWidth().height(50.dp)
+            )
+        }
+    ) {  paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
         ) {
-            Text("Add Transaction", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "New Transaction",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 64.dp)
+            )
+
+            // Amount Input
+            OutlinedTextField(
+                value = amount,
+                onValueChange = { amount = it },
+                label = { Text("Amount", color = SubText) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Transaction Type Dropdown
+            DropdownMenuField(
+                label = "Type",
+                options = transactionTypes,
+                selectedOption = selectedType,
+                onOptionSelected = { selectedType = it }
+            )
+
+            // Category Dropdown
+            DropdownMenuField(
+                label = "Category",
+                options = defaultCategories,
+                selectedOption = selectedCategory,
+                onOptionSelected = { selectedCategory = it }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Add Transaction Button
+            Button(
+                onClick = {
+                    //check if amount string contains decimal point else add it
+                    val formattedAmountString = if (!amount.contains(".")){
+                        "$amount.00"
+                    } else {
+                        amount
+                    }
+
+                    val transactionAmount = formattedAmountString.toDoubleOrNull()
+                    if (transactionAmount != null && selectedCategory.isNotEmpty()) {
+                        transactionViewModel.addTransaction(
+                            amount = transactionAmount,
+                            category = selectedCategory,
+                            type = selectedType.lowercase()
+                        )
+                        onTransactionAdded()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp)
+            ) {
+                Text("Add Transaction", style = MaterialTheme.typography.titleMedium)
+            }
         }
     }
 }

@@ -22,14 +22,20 @@ class TransactionViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
+    private val _categoryCounts = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val categoryCounts: StateFlow<Map<String, Int>> = _categoryCounts
+
     init {
         fetchCategories()
+        fetchCategoryCounts()
 
         viewModelScope.launch {
             authViewModel.user.collect { user ->
                 if (user != null) {
                     if (_transactions.value.isEmpty()) {
                         fetchTransactions()
+                        fetchCategories()
+                        fetchCategoryCounts()
                     }
                 }
             }
@@ -83,6 +89,16 @@ class TransactionViewModel(
             } catch (e: Exception) {
                 _error.value = e.message
             }
+        }
+    }
+
+    fun fetchCategoryCounts() {
+        viewModelScope.launch {
+            repo.getTransactions()
+            .collect { transactions ->
+                val counts = transactions.groupingBy { it.category }.eachCount()
+                _categoryCounts.value = counts
+        }
         }
     }
 }
