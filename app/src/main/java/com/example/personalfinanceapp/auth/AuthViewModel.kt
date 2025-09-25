@@ -29,11 +29,15 @@ class AuthViewModel(
         }
     }
 
-    fun signUp(name: String,email: String, password: String){
+    fun signUp(name: String, email: String, password: String, onUserCreated: () -> Unit){
         viewModelScope.launch {
             try {
                 val result = repo.signUp(name, email, password)
                 _user.value = result
+
+                if (result != null) {
+                    onUserCreated()
+                }
             } catch (e: Exception) {
                 _error.value = e.message
             }

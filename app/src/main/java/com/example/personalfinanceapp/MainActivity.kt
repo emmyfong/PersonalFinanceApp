@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,6 +17,7 @@ import com.example.personalfinanceapp.auth.LoginScreen
 import com.example.personalfinanceapp.auth.SignupScreen
 import com.example.personalfinanceapp.auth.WelcomeScreen
 import com.example.personalfinanceapp.navigation.AppMainScreen
+import com.example.personalfinanceapp.transaction.TransactionViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -104,6 +106,7 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
         }
 
         composable("signup") {
+            val transactionViewModel: TransactionViewModel = viewModel()
             SignupScreen(
                 authViewModel = authViewModel,
                 onLoginSuccess = {
@@ -111,6 +114,7 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
                         popUpTo("signup") { inclusive = true }
                     }
                 },
+                onUserCreated = { transactionViewModel.addDefaultCategoriesOnSignUp() },
                 onNavigateToLogin = { navController.navigate("login") },
                 onGoogleSignIn = onGoogleSignIn,
                 onNavigateBack = { navController.popBackStack() }

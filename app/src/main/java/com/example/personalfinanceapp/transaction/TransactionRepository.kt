@@ -79,9 +79,85 @@ class TransactionRepository (
     suspend fun addCategory(name: String) {
         if (currentUserId == null) throw IllegalStateException("User must be logged in to add a category")
 
-        val newCategory = Category(name = name, userId = currentUserId!!)
-        categoryCollection
-            .add(newCategory)
+        //check if this category already exists for this user
+        val existingCategory = categoryCollection
+            .whereEqualTo("userId", currentUserId!!)
+            .whereEqualTo("name", name)
+            .get()
             .await()
+            .documents
+            .firstOrNull()
+
+        //only add if the category doesnt exist
+        if (existingCategory == null) {
+            val newCategory = Category(name = name, userId = currentUserId!!)
+            categoryCollection
+                .add(newCategory)
+                .await()
+        }
+    }
+
+    //UPDATE CATEGORY
+    suspend fun editCategory(oldName: String, newName: String) {
+        if (currentUserId == null) throw IllegalStateException("User must be logged in to edit a category")
+
+        val batch = firestore.batch()
+
+        //update all transactions with the old category name -> new category name
+        transactionCollection
+            .whereEqualTo("userId", currentUserId)
+            .whereEqualTo("category", oldName)
+            .get()
+            .await()
+            .documents
+            .forEach { document ->
+                batch.update(document.reference, "category", newName)
+            }
+
+        //update category document
+        categoryCollection
+            .whereEqualTo("userId", currentUserId)
+            .whereEqualTo("name", oldName)
+            .get()
+            .await()
+            .documents
+            .firstOrNull()?.reference
+            ?.let { categoryRef ->
+                batch.update(categoryRef, "name", newName)
+            }
+
+        batch.commit().await()
+    }
+
+    //DELETE CATEGORY
+    suspend fun deleteCategory(name: String) {
+        if (currentUserId == null) throw IllegalStateException("User must be logged in to delete a category")
+
+        val batch = firestore.batch()
+
+        //update all transactions with deleted category to "uncategorized"
+        transactionCollection
+            .whereEqualTo("userId", currentUserId!!)
+            .whereEqualTo("category", name)
+            .get()
+            .await()
+            .documents
+            .forEach { document ->
+                batch.update(document.reference, "category", "Uncategorized")
+            }
+
+        //delete the category document
+        categoryCollection
+            .whereEqualTo("userId", currentUserId!!)
+            .whereEqualTo("name", name)
+            .get()
+            .await()
+            .documents
+            .firstOrNull()?.reference
+            ?.let { categoryRef ->
+                batch.delete(categoryRef)
+            }
+
+        batch.commit().await()
     }
 }

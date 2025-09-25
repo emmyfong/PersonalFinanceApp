@@ -24,11 +24,13 @@ fun AddTransactionScreen(
     onTransactionAdded: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
+
+    val categories by transactionViewModel.categories.collectAsState()
+
     var amount by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf("Expense") }
 
-    val defaultCategories = listOf("Groceries", "Rent", "Salary", "Utilities", "Other")
     val transactionTypes = listOf("Expense", "Income")
 
     Scaffold(
@@ -83,7 +85,7 @@ fun AddTransactionScreen(
             // Category Dropdown
             DropdownMenuField(
                 label = "Category",
-                options = defaultCategories,
+                options = categories,
                 selectedOption = selectedCategory,
                 onOptionSelected = { selectedCategory = it }
             )

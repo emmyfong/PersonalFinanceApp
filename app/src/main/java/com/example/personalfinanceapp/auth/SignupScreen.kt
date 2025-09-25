@@ -1,26 +1,22 @@
 package com.example.personalfinanceapp.auth
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.personalfinanceapp.R
-import com.example.personalfinanceapp.ui.theme.Blue
-import com.example.personalfinanceapp.ui.theme.Mint
 import com.example.personalfinanceapp.ui.theme.Black
 import com.example.personalfinanceapp.ui.theme.SubText
 import com.example.personalfinanceapp.ui.theme.White
@@ -31,7 +27,8 @@ fun SignupScreen(
     onLoginSuccess: () -> Unit,
     onGoogleSignIn: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onUserCreated: () -> Unit
 ){
     val user by authViewModel.user.collectAsState()
     val error by authViewModel.error.collectAsState()
@@ -51,18 +48,17 @@ fun SignupScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, start = 8.dp),
+                    .padding(top = 64.dp, bottom = 16.dp, start = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { onNavigateBack() }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                IconButton(onClick = onNavigateBack) {
+                    Image(
+                        painter = painterResource(id = R.drawable.outline_arrow_back_white),
                         contentDescription = "Back",
-                        tint = White
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Back", color = White, style = MaterialTheme.typography.titleMedium)
             }
 
             Column(
@@ -152,7 +148,7 @@ fun SignupScreen(
 
                 // Sign Up Button (Uses Theme Primary: Black background, White text)
                 Button(
-                    onClick = { authViewModel.signUp(name, email, password) },
+                    onClick = { authViewModel.signUp(name, email, password, onUserCreated) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary, // Black
                         contentColor = MaterialTheme.colorScheme.onPrimary  // White

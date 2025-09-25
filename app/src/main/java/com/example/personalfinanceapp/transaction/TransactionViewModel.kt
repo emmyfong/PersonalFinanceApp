@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 //manage state and logic for the transaction screen
+//controls the trigger functions
 class TransactionViewModel(
     private val repo: TransactionRepository = TransactionRepository(),
     private val authViewModel: AuthViewModel = AuthViewModel()
@@ -92,6 +93,34 @@ class TransactionViewModel(
         }
     }
 
+    //edit category
+    fun editCategory(oldName: String, newName: String) {
+        viewModelScope.launch {
+            try {
+                repo.editCategory(oldName, newName)
+                fetchCategories()
+                fetchCategoryCounts()
+                fetchTransactions() //to refresh all the data
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
+    }
+
+    //delete category
+    fun deleteCategory(name: String) {
+        viewModelScope.launch {
+            try {
+                repo.deleteCategory(name)
+                fetchCategories()
+                fetchCategoryCounts()
+                fetchTransactions() //to refresh all the data
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
+    }
+
     fun fetchCategoryCounts() {
         viewModelScope.launch {
             repo.getTransactions()
@@ -99,6 +128,18 @@ class TransactionViewModel(
                 val counts = transactions.groupingBy { it.category }.eachCount()
                 _categoryCounts.value = counts
         }
+        }
+    }
+
+    //add defult categories after user sign up
+    fun addDefaultCategoriesOnSignUp() {
+        val defaults = listOf("Groceries", "Rent", "Salary", "Utilities", "Other")
+        viewModelScope.launch {
+            defaults.forEach { name ->
+                repo.addCategory(name)
+            }
+            //refresh state after creation
+            fetchCategories()
         }
     }
 }

@@ -69,12 +69,7 @@ fun AppMainScreen(
             composable("manage_categories") {
                 ManageCategoriesScreen(
                     onNavigateBack = { navHostController.popBackStack() },
-                    onNavigateToAddCategory = { navHostController.navigate("add_category_dialog") }
                 )
-            }
-            composable("add_category_dialog") {
-                // TODO: Add AddCategoryDialog composable here
-                // AddCategoryDialog()
             }
         }
     }
