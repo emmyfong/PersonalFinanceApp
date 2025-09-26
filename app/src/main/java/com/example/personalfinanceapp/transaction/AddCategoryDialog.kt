@@ -44,3 +44,68 @@ fun AddCategoryDialog(
         }
     )
 }
+
+//dialog for editing/deleting
+@Composable
+fun EditCategoryDialog(
+    categoryToEdit: String,
+    onDismiss: () -> Unit,
+    onConfirmEdit: (String, String) -> Unit
+) {
+    var newCategoryName by remember {mutableStateOf(categoryToEdit)}
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Edit Category") },
+        text = {
+            OutlinedTextField(
+                value = newCategoryName,
+                onValueChange = { newCategoryName = it },
+                label = { Text("New Category Name") }
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (newCategoryName.isNotBlank() && newCategoryName != categoryToEdit) {
+                        onConfirmEdit(categoryToEdit, newCategoryName)
+                    }
+                }
+            ) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+fun DeleteCategoryDialog(
+    categoryToDelete: String,
+    onDismiss: () -> Unit,
+    onConfirmDelete: (String) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Delete Category") },
+        text = { Text("This will update all transactions in '$categoryToDelete' to 'Uncategorized'. Are you sure you want to delete this category?")},
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirmDelete(categoryToDelete)
+                }
+            ) {
+                Text("Delete")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}

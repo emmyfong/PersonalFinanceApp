@@ -28,13 +28,17 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionsScreen(
-    transactionViewModel: TransactionViewModel = viewModel(),
+    transactionViewModel: TransactionViewModel,
     onNavigateToAddTransaction: () -> Unit,
-    onNavigateToManageCategories: () -> Unit
 ) {
     val transactions by transactionViewModel.transactions.collectAsState()
-    //add state for the dialog
-    var showAddOptionsDialog by remember { mutableStateOf(false) }
+
+    val categories by transactionViewModel.categories.collectAsState()
+    val selectedFilter by transactionViewModel.categoryFilter.collectAsState()
+
+    val filterOptions = remember(categories) {
+        listOf("All") + categories
+    }
 
     Scaffold(
         topBar = {
@@ -43,8 +47,8 @@ fun TransactionsScreen(
           )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showAddOptionsDialog = true }) {
-                Icon(Icons.Filled.Add, contentDescription = "Add")
+            FloatingActionButton(onClick = onNavigateToAddTransaction) {
+                Icon(Icons.Filled.Add, contentDescription = "Add New Transaction")
             }
         },
     ) { paddingValues ->
@@ -54,6 +58,14 @@ fun TransactionsScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
+            FilterDropdownMenu(
+                options = filterOptions,
+                selectedOption = selectedFilter ?: "All",
+                onOptionSelected = { newFilter ->
+                    transactionViewModel.setCategoryFilter(newFilter)
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             if (transactions.isEmpty()) {
                 Text(
                     "No transactions found.",
@@ -71,46 +83,8 @@ fun TransactionsScreen(
                 }
             }
         }
-
-        //alert for "add" options
-        if (showAddOptionsDialog) {
-            AlertDialog(
-                onDismissRequest = { showAddOptionsDialog = false },
-                title = { Text("Add New...") },
-                text = {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        TextButton(onClick = {
-                            onNavigateToAddTransaction()
-                            showAddOptionsDialog = false
-                        }) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Filled.Add, contentDescription = "New Transaction")
-                                Spacer(Modifier.width(8.dp))
-                                Text("New Transaction")
-                            }
-                        }
-
-                        TextButton(onClick = {
-                            onNavigateToManageCategories()
-                            showAddOptionsDialog = false
-                        }) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Filled.Add, contentDescription = "New Category")
-                                Spacer(Modifier.width(8.dp))
-                                Text("New Category")
-                            }
-                        }
-                    }
-                },
-                confirmButton = {
-                    TextButton(onClick = { showAddOptionsDialog = false }) {
-                        Text("Close")
-                    }
-                }
-            )
         }
     }
-}
 
 @Composable
 fun TransactionItem(transaction: Transaction) {
@@ -162,6 +136,46 @@ fun TransactionItem(transaction: Transaction) {
                 fontWeight = FontWeight.Bold,
                 color = amountColor
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterDropdownMenu(
+    options: List<String>,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier.fillMaxWidth(0.5f)
+    ) {
+        OutlinedTextField(
+            value = selectedOption,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Filter by Category") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.fillMaxWidth().menuAnchor()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    },
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
         }
     }
 }

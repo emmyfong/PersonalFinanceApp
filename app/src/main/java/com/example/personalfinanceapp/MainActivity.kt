@@ -1,14 +1,17 @@
-package com.example.personalfinanceapp
+package com.example.personalfinanceapp.dev
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import com.example.personalfinanceapp.dev.R
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,6 +19,7 @@ import com.example.personalfinanceapp.auth.AuthViewModel
 import com.example.personalfinanceapp.auth.LoginScreen
 import com.example.personalfinanceapp.auth.SignupScreen
 import com.example.personalfinanceapp.auth.WelcomeScreen
+import com.example.personalfinanceapp.dashboard.DashboardViewModel
 import com.example.personalfinanceapp.navigation.AppMainScreen
 import com.example.personalfinanceapp.transaction.TransactionViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -54,6 +58,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         authViewModel = AuthViewModel()
@@ -77,11 +82,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit) {
     //how we navigate the pages
     val navController = rememberNavController()
     val userState by authViewModel.user.collectAsState()
+    val transactionViewModel: TransactionViewModel = remember {
+        TransactionViewModel(authViewModel = authViewModel)
+    }
+    val dashboardViewModel: DashboardViewModel = remember {
+        DashboardViewModel(transactionViewModel = transactionViewModel)
+    }
 
     //Defines all the screens
     NavHost(
@@ -106,7 +118,6 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
         }
 
         composable("signup") {
-            val transactionViewModel: TransactionViewModel = viewModel()
             SignupScreen(
                 authViewModel = authViewModel,
                 onLoginSuccess = {
@@ -124,6 +135,8 @@ fun PersonalFinanceApp(authViewModel: AuthViewModel, onGoogleSignIn: () -> Unit)
         composable("app_main_screen") {
             AppMainScreen(
                 authViewModel = authViewModel,
+                transactionViewModel = transactionViewModel,
+                dashboardViewModel = dashboardViewModel,
                 onLogout = { navController.navigate("login") { popUpTo("app_main_screen") { inclusive = true } } }
             )
         }

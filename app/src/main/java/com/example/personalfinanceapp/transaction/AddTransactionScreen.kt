@@ -3,7 +3,7 @@ package com.example.personalfinanceapp.transaction
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import com.example.personalfinanceapp.R
+import com.example.personalfinanceapp.dev.R
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,17 +20,17 @@ import com.example.personalfinanceapp.ui.theme.SubText
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionScreen(
-    transactionViewModel: TransactionViewModel = viewModel(),
+    transactionViewModel: TransactionViewModel,
     onTransactionAdded: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
 
-    val categories by transactionViewModel.categories.collectAsState()
 
     var amount by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf("Expense") }
 
+    val categories by transactionViewModel.categories.collectAsState()
     val transactionTypes = listOf("Expense", "Income")
 
     Scaffold(
@@ -76,7 +76,7 @@ fun AddTransactionScreen(
 
             // Transaction Type Dropdown
             DropdownMenuField(
-                label = "Type",
+                label = "Transaction Type",
                 options = transactionTypes,
                 selectedOption = selectedType,
                 onOptionSelected = { selectedType = it }

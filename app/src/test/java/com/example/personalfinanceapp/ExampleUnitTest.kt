@@ -1,5 +1,4 @@
-package com.example.personalfinanceapp
-
+package com.example.personalfinanceapp.dev
 import org.junit.Test
 
 import org.junit.Assert.*

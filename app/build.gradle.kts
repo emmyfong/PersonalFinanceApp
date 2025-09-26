@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.personalfinanceapp"
+    namespace = "com.example.personalfinanceapp.dev"
     compileSdk = 36
 
     defaultConfig {
@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.foundation)
 
     testImplementation(libs.junit)
 

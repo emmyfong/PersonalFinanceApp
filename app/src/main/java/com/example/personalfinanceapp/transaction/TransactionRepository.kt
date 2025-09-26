@@ -40,20 +40,35 @@ class TransactionRepository (
     }
 
     //FETCH ALL TRANSACTIONS (READ)
-    fun getTransactions(): Flow<List<Transaction>> {
-        val userId = currentUserId ?: return kotlinx.coroutines.flow.emptyFlow()
+// In TransactionRepository.kt
 
-        Log.d("FirestoreQuery", "Attempting to query transactions for user: $userId")
+    fun getTransactions(categoryFilter: String? = null): Flow<List<Transaction>> {
+        //Get User ID or return empty flow
+        val userId = currentUserId ?: run {
+            Log.e("FilterDebug", "UserID is null, cannot fetch.")
+            return kotlinx.coroutines.flow.emptyFlow()
+        }
 
-        return transactionCollection
-            .whereEqualTo("userId", userId)
-            .orderBy("date", Query.Direction.DESCENDING)
+        //base query: filter by userId
+        var query: Query = transactionCollection.whereEqualTo("userId", userId)
+
+        if (categoryFilter != null && categoryFilter != "All") {
+            query = query.whereEqualTo("category", categoryFilter)
+            Log.d("FilterDebug", "Query Built: Filtering by Category '$categoryFilter'")
+        } else {
+            Log.d("FilterDebug", "Query Built: Filtering for ALL transactions")
+        }
+
+        query = query.orderBy("date", Query.Direction.DESCENDING)
+
+        return query
             .snapshots()
             .map { snapshot ->
+                Log.v("FilterDebug", "Firestore Snapshot Size: ${snapshot.documents.size}")
                 snapshot.toObjects(Transaction::class.java)
             }
             .catch { e ->
-                //log errors
+                Log.e("FilterDebug", "Firestore Query Failed: ${e.message}")
                 println("Error fetching transactions: $e")
                 emit(emptyList())
             }

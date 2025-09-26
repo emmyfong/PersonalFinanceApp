@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,9 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.personalfinanceapp.R
+import com.example.personalfinanceapp.dev.R
 import com.example.personalfinanceapp.ui.theme.Black
 import com.example.personalfinanceapp.ui.theme.SubText
 import com.example.personalfinanceapp.ui.theme.White
@@ -132,6 +135,9 @@ fun SignupScreen(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Enter password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = Black,
                         unfocusedTextColor = Black,

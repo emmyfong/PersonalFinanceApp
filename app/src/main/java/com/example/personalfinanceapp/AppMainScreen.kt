@@ -4,26 +4,25 @@ package com.example.personalfinanceapp.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.personalfinanceapp.auth.AuthViewModel
 import com.example.personalfinanceapp.dashboard.DashboardScreen
+import com.example.personalfinanceapp.dashboard.DashboardViewModel
 import com.example.personalfinanceapp.transaction.TransactionsScreen
 import com.example.personalfinanceapp.transaction.AddTransactionScreen
-import com.example.personalfinanceapp.transaction.ManageCategoriesScreen
-import com.google.firebase.auth.FirebaseAuth
+import com.example.personalfinanceapp.transaction.TransactionViewModel
 
 @Composable
 fun AppMainScreen(
     authViewModel: AuthViewModel,
+    transactionViewModel: TransactionViewModel,
+    dashboardViewModel: DashboardViewModel,
     onLogout: () -> Unit
 ) {
     val navHostController = rememberNavController()
@@ -47,13 +46,15 @@ fun AppMainScreen(
             composable(Screen.Dashboard.route) {
                 DashboardScreen(
                     authViewModel = authViewModel,
+                    transactionViewModel = transactionViewModel,
+                    dashboardViewModel = dashboardViewModel,
                     onLogout = onLogout,
-                    onNavigateToAddTransaction = { navHostController.navigate("add_transaction") })
+                )
             }
             composable(Screen.Transactions.route) {
                 TransactionsScreen(
+                    transactionViewModel = transactionViewModel,
                     onNavigateToAddTransaction = { navHostController.navigate("add_transaction") },
-                    onNavigateToManageCategories = { navHostController.navigate("manage_categories") }
                 )
             }
             composable(Screen.Settings.route) {
@@ -63,12 +64,8 @@ fun AppMainScreen(
             composable("add_transaction") {
                 AddTransactionScreen(
                     onNavigateBack = { navHostController.popBackStack() },
+                    transactionViewModel = transactionViewModel,
                     onTransactionAdded = { navHostController.popBackStack() }
-                )
-            }
-            composable("manage_categories") {
-                ManageCategoriesScreen(
-                    onNavigateBack = { navHostController.popBackStack() },
                 )
             }
         }
