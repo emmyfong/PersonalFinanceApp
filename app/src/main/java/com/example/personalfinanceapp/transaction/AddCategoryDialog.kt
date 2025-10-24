@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.personalfinanceapp.ui.theme.White
 
 @Composable
 fun AddCategoryDialog(
@@ -17,6 +18,7 @@ fun AddCategoryDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Add New Category") },
+        containerColor = White,
         text = {
             OutlinedTextField(
                 value = categoryName,
@@ -57,6 +59,7 @@ fun EditCategoryDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Edit Category") },
+        containerColor = White,
         text = {
             OutlinedTextField(
                 value = newCategoryName,
@@ -92,6 +95,7 @@ fun DeleteCategoryDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Delete Category") },
+        containerColor = White,
         text = { Text("This will update all transactions in '$categoryToDelete' to 'Uncategorized'. Are you sure you want to delete this category?")},
         confirmButton = {
             Button(

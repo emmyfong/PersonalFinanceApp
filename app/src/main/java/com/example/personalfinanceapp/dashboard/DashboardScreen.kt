@@ -212,7 +212,10 @@ fun CategoryItem(
     onDelete: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.22f)
+        )
     ) {
         Row(
             modifier = Modifier
