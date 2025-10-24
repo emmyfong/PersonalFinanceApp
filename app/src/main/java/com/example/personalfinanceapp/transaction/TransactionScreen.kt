@@ -47,7 +47,11 @@ fun TransactionsScreen(
           )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToAddTransaction) {
+            FloatingActionButton(
+                onClick = onNavigateToAddTransaction,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
                 Icon(Icons.Filled.Add, contentDescription = "Add New Transaction")
             }
         },
