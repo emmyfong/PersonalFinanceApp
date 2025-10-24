@@ -40,6 +40,10 @@ fun DashboardScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<Pair<String, Int>?>(null) }
 
+    LaunchedEffect(Unit) {
+        transactionViewModel.fetchCategories()
+        transactionViewModel.fetchCategoryCounts()
+    }
 
     Scaffold { paddingValues ->
         LazyColumn(
@@ -70,12 +74,6 @@ fun DashboardScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    // Welcome/Status Text
-                    Text(
-                        text = "Welcome! You're logged in 🎉",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
 
                     //Networth
                     Card(
