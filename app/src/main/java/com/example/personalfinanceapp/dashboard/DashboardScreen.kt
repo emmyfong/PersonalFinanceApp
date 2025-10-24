@@ -1,5 +1,7 @@
 package com.example.personalfinanceapp.dashboard
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,12 +21,12 @@ import com.example.personalfinanceapp.transaction.DeleteCategoryDialog
 import com.example.personalfinanceapp.transaction.EditCategoryDialog
 import kotlin.math.abs
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DashboardScreen(
     authViewModel: AuthViewModel,
     transactionViewModel: TransactionViewModel,
     dashboardViewModel: DashboardViewModel,
-    onLogout: () -> Unit,
 ) {
     val userName = authViewModel.user.collectAsState().value?.displayName ?: "User"
     val summary by dashboardViewModel.summary.collectAsState()
@@ -113,17 +115,6 @@ fun DashboardScreen(
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.weight(1f)
                         )
-                    }
-
-                    // Logout Button
-                    Button(
-                        onClick = {
-                            authViewModel.logout()
-                            onLogout()
-                        },
-                        modifier = Modifier.padding(top = 16.dp)
-                    ) {
-                        Text("Logout")
                     }
                 }
             }

@@ -17,6 +17,8 @@ import com.example.personalfinanceapp.dashboard.DashboardViewModel
 import com.example.personalfinanceapp.transaction.TransactionsScreen
 import com.example.personalfinanceapp.transaction.AddTransactionScreen
 import com.example.personalfinanceapp.transaction.TransactionViewModel
+import com.example.personalfinanceapp.settings.Settings
+
 
 @Composable
 fun AppMainScreen(
@@ -48,7 +50,6 @@ fun AppMainScreen(
                     authViewModel = authViewModel,
                     transactionViewModel = transactionViewModel,
                     dashboardViewModel = dashboardViewModel,
-                    onLogout = onLogout,
                 )
             }
             composable(Screen.Transactions.route) {
@@ -58,8 +59,10 @@ fun AppMainScreen(
                 )
             }
             composable(Screen.Settings.route) {
-                // TODO: Add SettingsScreen composable here
-                // SettingsScreen()
+                Settings(
+                    authViewModel = authViewModel,
+                    onLogout = onLogout
+                )
             }
             composable("add_transaction") {
                 AddTransactionScreen(
